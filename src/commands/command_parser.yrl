@@ -1,25 +1,25 @@
 % Andrea Leopardi's list parser
 % http://andrealeopardi.com/posts/tokenizing-and-parsing-in-elixir-using-leex-and-yecc/
 Nonterminals list elements el song arg.
-Terminals '[' ']' ',' int quoted named command ncommand start float.
+Terminals '[' ']' ',' int word named command ncommand start float.
 Rootsymbol song.
 
-% Unary command.
-% Example: \go
-song -> start command                  : {value_of('$2'), [], []}.
+% Unary
+% Example: /go
+song -> start command                  : {value_of('$2'), []}.
 
-% Command with argument.
-% Example: \go: here
-song -> start named arg                : {value_of('$2'), ['$3'], []}.
+% Binary
+% Example: /go here
+song -> start command arg                : {value_of('$2'), ['$3']}.
 
-% Command with named argument.
-% Example: \go where: there
-song -> start command named arg        : {value_of('$2'), ['$4'], [value_of('$3')]}.
+
+
 
 arg -> el       : '$1'.
 arg -> list     : '$1'.
 
-el -> quoted    : value_of('$1').
+
+el -> word      : value_of('$1').
 el -> command   : value_of('$1').
 el -> int       : value_of('$1').
 el -> float     : value_of('$1').

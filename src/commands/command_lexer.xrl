@@ -5,9 +5,10 @@ WHITESPACE = [\s\t\n\r]
 VARIABLE = [A-Z_][0-9a-zA-Z_]*
 FLOAT = (\+|-)?[0-9]+\.[0-9]+((E|e)(\+|-)?[0-9]+)?
 COMMAND = [a-z_]+
-NAMED = [a-zA-Z_]+:
-WORDS = [0-9a-zA-Z]*
+WORDS = [0-9a-zA-Z\s]*
 SKIP = [\c]
+SIGIL = [$#@$]
+
 % This is a very forgiving language when it comes to quotation.
 % The downside of this is that you can't have quotes within a string
 
@@ -15,9 +16,9 @@ Rules.
 
 \/            : {token, {start, TokenLine, TokenChars}}.
 {COMMAND}     : {token, {command, TokenLine, TokenChars}}.
-{NAMED}       : {token, {named, TokenLine, strip_named(TokenChars, TokenLen)}}.
-'{WORDS}'     : {token, {word, TokenLine, strip(TokenChars, TokenLen)}}.
+SIGIL         : {token, {sigil, TokenLine, TokenChars}}.
 "{WORDS}"     : {token, {word, TokenLine, strip(TokenChars, TokenLen)}}.
+'{WORDS}'     : {token, {word, TokenLine, strip(TokenChars, TokenLen)}}.
 {INT}         : {token, {int,  TokenLine, list_to_integer(TokenChars)}}.
 {FLOAT}       : {token, {float,  TokenLine, list_to_integer(TokenChars)}}.
 \(            : {token, {'(', TokenLine}}.
