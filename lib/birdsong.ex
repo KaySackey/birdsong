@@ -17,14 +17,11 @@ defmodule BirdSong do
   """
   def convert_list(list), do: (for x <- list, do: to_string(x))
 
-  @doc """
-    Handle error case where parser was chained to a lexer that could not tokenize
-  """
-  def parse({:error, message}), do: {:error, message}
+
   @doc """
     Given a valid list of tokens, build
   """
-  def parse({:ok, tokens}) do
+  def parse(tokens) do
     case @parser.parse(tokens) do
       {:ok, payload } ->
           {:ok, convert(payload)}
@@ -59,6 +56,8 @@ defmodule BirdSong do
   Take a string, and return an AST
   """
   def ast(str) do
-    parse(lex(str))
+  	with {:ok, tokens} <- lex(str),
+  			 {:ok, ast} <- parse(tokens),
+  			 do: {:ok, ast}
   end
 end
